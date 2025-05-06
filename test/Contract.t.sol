@@ -3,21 +3,26 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import "src/Contract.sol";
+import "src/RewardContract.sol";
 
-contract TestContract is Test {
-    Contract c;
+contract RewardContractTest is Test {
+    RewardContract c;
+    address test = 0xF40e1B6A63621Cb5F9b64cD766E3D465648B5C3d;
 
     function setUp() public {
-        c = new Contract();
+        c = new RewardContract(address(this));
     }
 
-    function testBar() public {
-        assertEq(uint256(1), uint256(1), "ok");
+    function testMint() public {
+       c.mint(test, 10);
+       assertEq(c.balanceOf(test),10);
     }
 
-    function testFoo(uint256 x) public {
-        vm.assume(x < type(uint128).max);
-        assertEq(x + x, x * 2);
+    function testUdate() public {
+        c.updateStakingContract(test);
+        vm.startPrank(test);
+        c.mint(test,10);
+        assertEq(c.balanceOf(test),10);
+
     }
 }
